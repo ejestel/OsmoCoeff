@@ -218,3 +218,17 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ---- OsmoCoeff: heavy or machine-generated simulation files (never commit) ----
+*.dcd
+*.xtc
+*.trr
+*.nc
+*.h5
+*.chk
+*.pkl
+*.npy
+*.npz
+*_system.xml
+*_state.xml
+slurm_codes/

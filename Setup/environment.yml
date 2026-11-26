@@ -1,0 +1,57 @@
+# OsmoCoeff environment (simulation + analysis).
+# Built and tested 2026-11-25 (see Setup/README.md). For the exact tested packages, use Setup/lock/.
+#
+# Based on the polymerist install instructions (https://github.com/timbernat/polymerist),
+# with two changes:
+#   1. Every polymerist dependency available here is installed by conda BEFORE pip adds polymerist.
+#      Installing with pip first left pip and conda copies of OpenMM, fonttools and pyyaml mixed.
+#   2. CUDA 11.8 with CPU-only PyTorch/JAX, so the GPU code also runs on older NVIDIA drivers.
+#      CUDA 12.9 failed on a driver supporting CUDA 12.2 (CUDA_ERROR_UNSUPPORTED_PTX_VERSION).
+#
+# Create:  CONDA_CHANNEL_PRIORITY=strict mamba env create -f Setup/environment.yml
+# Check:   python Setup/check_environment.py --require-gpu
+# Optional, needs your own OpenEye license:
+#          mamba install -n polymerist-osmocoeff --freeze-installed -c openeye -c conda-forge openeye-toolkits
+name: polymerist-osmocoeff
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - pip
+  # GPU (CUDA 11.8) and CPU-only machine-learning libraries
+  - cudatoolkit=11.8
+  - pytorch=*=cpu*
+  - jaxlib=*=cpu*
+  # polymerist install instructions
+  - openff-toolkit
+  - mbuild
+  - openbabel
+  - openff-nagl
+  - openff-nagl-models
+  - openmm
+  # other polymerist dependencies
+  - numpy>=2
+  - scipy
+  - pandas
+  - rich
+  - pillow
+  - matplotlib-base
+  - anytree
+  - networkx
+  - rdkit
+  - mdtraj
+  - importlib_resources
+  - "setuptools<82"
+  - fonttools
+  - pyyaml
+  # box building, analysis and tests
+  - packmol
+  - mdanalysis
+  - pymbar
+  - tqdm
+  - pytest
+  - pip:
+      # 1.1.0 has the corrected TIP3P oxygen charge (-0.834).
+      # Always install into a NEW environment: older versions leave a cached water_TIP3P.sdf behind.
+      - polymerist[interactive,chemdb]==1.1.0
